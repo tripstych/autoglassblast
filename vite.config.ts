@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: mode === "production" ? "/wp-content/themes/jupiterx/auto-glass-quote/" : "/",
   server: {
     host: "::",
     port: 8080,
