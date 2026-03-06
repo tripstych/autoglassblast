@@ -1,19 +1,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { StepIndicator } from "@/components/QuoteFormSteps";
+import { StepHeader } from "@/components/StepHeader";
+import { VehicleTypeCarousel } from "@/components/VehicleTypeCarousel";
 import { VehicleStep } from "@/components/VehicleStep";
 import { GlassTypeStep } from "@/components/GlassTypeStep";
-import { DateTimeStep } from "@/components/DateTimeStep";
+import { WeeklyDateTimeGrid } from "@/components/WeeklyDateTimeGrid";
 import { DetailsStep } from "@/components/DetailsStep";
 import { ReviewStep } from "@/components/ReviewStep";
-import { ArrowLeft, ArrowRight, Send, CheckCircle2 } from "lucide-react";
+import { Send, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
-const STEPS = ["Vehicle", "Glass Type", "Date & Time", "Details", "Review"];
-
 export function QuoteForm() {
-  const [step, setStep] = useState(0);
-  const [submitted, setSubmitted] = useState(false);
+  // Vehicle type
+  const [vehicleType, setVehicleType] = useState("sedan");
 
   // Vehicle
   const [year, setYear] = useState("");
@@ -38,43 +37,36 @@ export function QuoteForm() {
   const [insuranceClaim, setInsuranceClaim] = useState("");
   const [notes, setNotes] = useState("");
 
-  const validateStep = (s: number): boolean => {
-    if (s === 0 && (!year || !make || !model)) {
-      toast.error("Please select your vehicle year, make, and model.");
-      return false;
-    }
-    if (s === 1 && !glassType) {
-      toast.error("Please select a glass type.");
-      return false;
-    }
-    if (s === 2 && (!date || !time)) {
-      toast.error("Please select both a date and time.");
-      return false;
-    }
-    if (s === 3) {
-      if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim() || !zipCode.trim()) {
-        toast.error("Please fill in all required contact fields.");
-        return false;
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        toast.error("Please enter a valid email address.");
-        return false;
-      }
-    }
-    return true;
-  };
-
-  const next = () => { if (validateStep(step)) setStep((s) => Math.min(s + 1, 4)); };
-  const prev = () => setStep((s) => Math.max(s - 1, 0));
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = () => {
+    if (!year || !make) {
+      toast.error("Please select your vehicle year and make.");
+      return;
+    }
+    if (!glassType) {
+      toast.error("Please select a glass type.");
+      return;
+    }
+    if (!date || !time) {
+      toast.error("Please select a date and time.");
+      return;
+    }
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim() || !zipCode.trim()) {
+      toast.error("Please fill in all required contact fields.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
     toast.success("Quote request submitted! We'll be in touch within 24 hours.");
     setSubmitted(true);
   };
 
   const resetForm = () => {
-    setSubmitted(false); setStep(0);
-    setYear(""); setMake(""); setModel(""); setGlassType("");
+    setSubmitted(false);
+    setVehicleType("sedan"); setYear(""); setMake(""); setModel(""); setGlassType("");
     setDate(undefined); setTime(""); setVin("");
     setFirstName(""); setLastName(""); setEmail(""); setPhone("");
     setPreferredContact(""); setZipCode(""); setInsuranceClaim(""); setNotes("");
@@ -83,8 +75,8 @@ export function QuoteForm() {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-[hsl(var(--step-completed))]/10 flex items-center justify-center">
-          <CheckCircle2 className="w-8 h-8 text-[hsl(var(--step-completed))]" />
+        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <CheckCircle2 className="w-8 h-8 text-primary" />
         </div>
         <h2 className="font-display text-2xl font-bold text-foreground">Request Submitted!</h2>
         <p className="text-muted-foreground max-w-md">
@@ -99,35 +91,56 @@ export function QuoteForm() {
   const formData = { year, make, model, glassType, date, time, vin, firstName, lastName, email, phone, zipCode, preferredContact, insuranceClaim, notes };
 
   return (
-    <div>
-      <StepIndicator steps={STEPS} currentStep={step} />
+    <div className="space-y-16">
+      {/* STEP 01 — Vehicle Type + Year/Make/Model */}
+      <section className="space-y-8">
+        <StepHeader stepNumber={1} title="Choose Your Car Type" />
+        <VehicleTypeCarousel selected={vehicleType} onSelect={setVehicleType} />
+        <VehicleStep
+          year={year} make={make} model={model}
+          onYearChange={setYear} onMakeChange={setMake} onModelChange={setModel}
+        />
+      </section>
 
-      <div className="min-h-[380px]">
-        {step === 0 && <VehicleStep year={year} make={make} model={model} onYearChange={setYear} onMakeChange={setMake} onModelChange={setModel} />}
-        {step === 1 && <GlassTypeStep selected={glassType} onSelect={setGlassType} />}
-        {step === 2 && <DateTimeStep date={date} time={time} onDateChange={setDate} onTimeChange={setTime} />}
-        {step === 3 && (
-          <DetailsStep
-            vin={vin} firstName={firstName} lastName={lastName} email={email} phone={phone}
-            zipCode={zipCode} preferredContact={preferredContact} insuranceClaim={insuranceClaim} notes={notes}
-            onVinChange={setVin} onFirstNameChange={setFirstName} onLastNameChange={setLastName}
-            onEmailChange={setEmail} onPhoneChange={setPhone} onZipCodeChange={setZipCode}
-            onPreferredContactChange={setPreferredContact} onInsuranceClaimChange={setInsuranceClaim} onNotesChange={setNotes}
-          />
-        )}
-        {step === 4 && <ReviewStep data={formData} />}
-      </div>
+      {/* STEP 02 — Glass Type */}
+      <section className="space-y-8">
+        <StepHeader stepNumber={2} title="Specify The Glass" subtitle="Which Glass Needs Replacement" />
+        <GlassTypeStep selected={glassType} onSelect={setGlassType} />
+      </section>
 
-      <div className="flex justify-between mt-8 pt-6 border-t">
-        <Button variant="ghost" onClick={prev} disabled={step === 0} className="gap-2">
-          <ArrowLeft className="w-4 h-4" /> Back
-        </Button>
-        {step < 4 ? (
-          <Button onClick={next} className="gap-2">Next <ArrowRight className="w-4 h-4" /></Button>
-        ) : (
-          <Button onClick={handleSubmit} className="gap-2"><Send className="w-4 h-4" /> Submit Request</Button>
-        )}
-      </div>
+      {/* STEP 03 — Date & Time */}
+      <section className="space-y-8">
+        <StepHeader stepNumber={3} title="Date and Time" />
+        <WeeklyDateTimeGrid date={date} time={time} onDateChange={setDate} onTimeChange={setTime} />
+      </section>
+
+      {/* STEP 04 — Details & Summary */}
+      <section className="space-y-8">
+        <StepHeader stepNumber={4} title="Summary" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <ReviewStep data={formData} />
+          <div className="space-y-6">
+            <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 space-y-4">
+              <h3 className="font-display font-semibold text-lg text-foreground">Your Contact Details</h3>
+              <p className="text-xs text-muted-foreground">
+                This request will be sent to us and an associate will get in touch for scheduling your service.
+              </p>
+              <DetailsStep
+                vin={vin} firstName={firstName} lastName={lastName} email={email} phone={phone}
+                zipCode={zipCode} preferredContact={preferredContact} insuranceClaim={insuranceClaim} notes={notes}
+                onVinChange={setVin} onFirstNameChange={setFirstName} onLastNameChange={setLastName}
+                onEmailChange={setEmail} onPhoneChange={setPhone} onZipCodeChange={setZipCode}
+                onPreferredContactChange={setPreferredContact} onInsuranceClaimChange={setInsuranceClaim} onNotesChange={setNotes}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center pt-4">
+          <Button size="lg" onClick={handleSubmit} className="gap-2 px-12 text-lg">
+            <Send className="w-5 h-5" /> Submit Request
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }
