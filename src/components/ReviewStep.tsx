@@ -77,7 +77,7 @@ export function ReviewStep({ data }: ReviewStepProps) {
       ]} />
 
       <ReviewSection icon={Shield} title="Glass Type" items={[
-        { label: "Type", value: glassLabels[data.glassType] || data.glassType },
+        { label: "Type", value: data.glassType.map(g => glassLabels[g] || g).join(", ") },
       ]} />
 
       <ReviewSection icon={Calendar} title="Appointment" items={[
