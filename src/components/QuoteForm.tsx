@@ -172,8 +172,8 @@ export function QuoteForm() {
           </div>
         </div>
         <div className="flex justify-center pt-4">
-          <Button size="lg" onClick={handleSubmit} className="gap-2 px-12 text-lg">
-            <Send className="w-5 h-5" /> Submit Request
+          <Button size="lg" onClick={handleSubmit} disabled={submitting} className="gap-2 px-12 text-lg">
+            <Send className="w-5 h-5" /> {submitting ? "Submitting…" : "Submit Request"}
           </Button>
         </div>
       </section>
