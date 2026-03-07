@@ -89,7 +89,7 @@ export function ReviewStep({ data }: ReviewStepProps) {
         { label: "Name", value: `${data.firstName} ${data.lastName}`.trim() },
         { label: "Email", value: data.email },
         { label: "Phone", value: data.phone },
-        { label: "ZIP Code", value: data.zipCode },
+        { label: "Postal Code", value: data.zipCode },
         { label: "Preferred Contact", value: contactLabels[data.preferredContact] || "" },
         { label: "Insurance", value: insuranceLabels[data.insuranceClaim] || "" },
         { label: "Notes", value: data.notes },

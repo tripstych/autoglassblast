@@ -94,7 +94,7 @@ export function DetailsStep(props: DetailsStepProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">ZIP Code *</label>
+            <label className="text-sm font-medium text-foreground">Postal Code *</label>
             <Input placeholder="12345" value={props.zipCode} onChange={(e) => props.onZipCodeChange(e.target.value)} maxLength={10} />
           </div>
           <div className="space-y-2">
