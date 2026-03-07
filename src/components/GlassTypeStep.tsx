@@ -33,8 +33,8 @@ const glassOptions = [
 ];
 
 interface GlassTypeStepProps {
-  selected: string;
-  onSelect: (id: string) => void;
+  selected: string[];
+  onSelect: (ids: string[]) => void;
 }
 
 export function GlassTypeStep({ selected, onSelect }: GlassTypeStepProps) {
@@ -47,12 +47,14 @@ export function GlassTypeStep({ selected, onSelect }: GlassTypeStepProps) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {glassOptions.map((opt) => {
-          const isSelected = selected === opt.id;
+          const isSelected = selected.includes(opt.id);
           return (
             <button
               key={opt.id}
               type="button"
-              onClick={() => onSelect(opt.id)}
+              onClick={() => onSelect(
+                isSelected ? selected.filter(id => id !== opt.id) : [...selected, opt.id]
+              )}
               className={cn(
                 "relative flex flex-col items-start gap-3 rounded-xl border-2 p-5 text-left transition-all duration-200 hover:shadow-md",
                 isSelected

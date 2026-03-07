@@ -20,7 +20,7 @@ export function QuoteForm() {
   const [model, setModel] = useState("");
 
   // Glass
-  const [glassType, setGlassType] = useState("");
+  const [glassType, setGlassType] = useState<string[]>([]);
 
   // Date & Time
   const [date, setDate] = useState<Date | undefined>();
@@ -44,8 +44,8 @@ export function QuoteForm() {
       toast.error("Please select your vehicle year and make.");
       return;
     }
-    if (!glassType) {
-      toast.error("Please select a glass type.");
+    if (glassType.length === 0) {
+      toast.error("Please select at least one glass type.");
       return;
     }
     if (!date || !time) {
@@ -66,7 +66,7 @@ export function QuoteForm() {
 
   const resetForm = () => {
     setSubmitted(false);
-    setVehicleType("sedan"); setYear(""); setMake(""); setModel(""); setGlassType("");
+    setVehicleType("sedan"); setYear(""); setMake(""); setModel(""); setGlassType([]);
     setDate(undefined); setTime(""); setVin("");
     setFirstName(""); setLastName(""); setEmail(""); setPhone("");
     setPreferredContact(""); setZipCode(""); setInsuranceClaim(""); setNotes("");
