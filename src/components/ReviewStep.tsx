@@ -6,7 +6,7 @@ interface ReviewStepProps {
     year: string;
     make: string;
     model: string;
-    glassType: string;
+    glassType: string[];
     date: Date | undefined;
     time: string;
     vin: string;
