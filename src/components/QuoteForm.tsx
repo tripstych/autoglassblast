@@ -20,7 +20,7 @@ export function QuoteForm() {
   const [model, setModel] = useState("");
 
   // Glass
-  const [glassType, setGlassType] = useState("");
+  const [glassType, setGlassType] = useState<string[]>([]);
 
   // Date & Time
   const [date, setDate] = useState<Date | undefined>();
