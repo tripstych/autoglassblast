@@ -44,8 +44,8 @@ export function QuoteForm() {
       toast.error("Please select your vehicle year and make.");
       return;
     }
-    if (!glassType) {
-      toast.error("Please select a glass type.");
+    if (glassType.length === 0) {
+      toast.error("Please select at least one glass type.");
       return;
     }
     if (!date || !time) {
