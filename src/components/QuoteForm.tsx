@@ -39,7 +39,9 @@ export function QuoteForm() {
 
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = () => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
     if (!year || !make) {
       toast.error("Please select your vehicle year and make.");
       return;
@@ -60,8 +62,42 @@ export function QuoteForm() {
       toast.error("Please enter a valid email address.");
       return;
     }
-    toast.success("Quote request submitted! We'll be in touch within 24 hours.");
-    setSubmitted(true);
+
+    setSubmitting(true);
+    try {
+      const formData = new FormData();
+      formData.append("auto_glass_quote", "1");
+      formData.append("vehicle_type", vehicleType);
+      formData.append("year", year);
+      formData.append("make", make);
+      formData.append("model", model);
+      formData.append("glass_type", glassType.join(", "));
+      formData.append("date", date ? date.toISOString().split("T")[0] : "");
+      formData.append("time", time);
+      formData.append("vin", vin);
+      formData.append("first_name", firstName);
+      formData.append("last_name", lastName);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      formData.append("postal_code", zipCode);
+      formData.append("preferred_contact", preferredContact);
+      formData.append("insurance_claim", insuranceClaim);
+      formData.append("notes", notes);
+
+      const response = await fetch(window.location.href, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Server error");
+
+      toast.success("Quote request submitted! We'll be in touch within 24 hours.");
+      setSubmitted(true);
+    } catch {
+      toast.error("Something went wrong. Please try again or call us directly.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
