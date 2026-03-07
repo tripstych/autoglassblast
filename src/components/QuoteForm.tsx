@@ -66,7 +66,7 @@ export function QuoteForm() {
 
   const resetForm = () => {
     setSubmitted(false);
-    setVehicleType("sedan"); setYear(""); setMake(""); setModel(""); setGlassType("");
+    setVehicleType("sedan"); setYear(""); setMake(""); setModel(""); setGlassType([]);
     setDate(undefined); setTime(""); setVin("");
     setFirstName(""); setLastName(""); setEmail(""); setPhone("");
     setPreferredContact(""); setZipCode(""); setInsuranceClaim(""); setNotes("");
