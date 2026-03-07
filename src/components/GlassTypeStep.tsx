@@ -33,8 +33,8 @@ const glassOptions = [
 ];
 
 interface GlassTypeStepProps {
-  selected: string;
-  onSelect: (id: string) => void;
+  selected: string[];
+  onSelect: (ids: string[]) => void;
 }
 
 export function GlassTypeStep({ selected, onSelect }: GlassTypeStepProps) {
